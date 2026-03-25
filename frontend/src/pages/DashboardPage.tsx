@@ -84,18 +84,23 @@ export default function DashboardPage() {
     const days = getMonthDays(viewYear, viewMonth);
 
     const fetchData = useCallback(async () => {
-        if (!user) return;
+        if (!user) {
+            console.log('[Dashboard] No user available yet. Skipping fetch.');
+            return;
+        }
+        console.log(`[Dashboard] Triggering data fetch for user: ${user.id}...`);
         try {
             const [habitsRes, logsRes, statsRes] = await Promise.all([
                 firestore.getHabits(user.id),
                 firestore.getLogsForMonth(user.id, viewYear, viewMonth + 1),
                 firestore.getHabitStats(user.id),
             ]);
+            console.log(`[Dashboard] Fetched ${habitsRes.length} habits successfully.`);
             setHabits(habitsRes);
             setLogs(logsRes);
             setStats(statsRes);
         } catch (err) {
-            console.error('Failed to fetch data', err);
+            console.error('[Dashboard] Failed to fetch data', err);
         }
     }, [viewYear, viewMonth, user]);
 

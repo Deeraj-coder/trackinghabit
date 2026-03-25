@@ -48,9 +48,10 @@ export interface FirestoreHabitStats {
 // ─── Habits CRUD ─────────────────────────────────────────────────────
 
 export async function getHabits(userId: string): Promise<FirestoreHabit[]> {
-    const q = query(habitsCol, where('userId', '==', userId), orderBy('createdAt', 'asc'));
+    console.log(`[Firestore] Fetching habits for userId: ${userId}`);
+    const q = query(habitsCol, where('userId', '==', userId));
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((d) => {
+    const habits = snapshot.docs.map((d) => {
         const data = d.data();
         let createdAt = new Date().toISOString();
         if (data.createdAt?.toDate) {
@@ -64,6 +65,9 @@ export async function getHabits(userId: string): Promise<FirestoreHabit[]> {
             createdAt,
         };
     }) as FirestoreHabit[];
+    
+    // Sort on client side to avoid needing a Firestore composite index
+    return habits.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 }
 
 export async function addHabit(userId: string, name: string, frequency: string, category: string): Promise<FirestoreHabit> {
@@ -117,15 +121,17 @@ export async function getLogsForMonth(
 
     for (let i = 0; i < habitIds.length; i += batchSize) {
         const batchIds = habitIds.slice(i, i + batchSize);
+        // Removed date range queries to avoid needing a composite index (habitId, date)
         const q = query(
             habitLogsCol,
-            where('habitId', 'in', batchIds),
-            where('date', '>=', startDate),
-            where('date', '<=', endDate)
+            where('habitId', 'in', batchIds)
         );
         const snap = await getDocs(q);
         snap.docs.forEach((d) => {
-            allLogs.push({ id: d.id, ...d.data() } as FirestoreHabitLog);
+            const log = { id: d.id, ...d.data() } as FirestoreHabitLog;
+            if (log.date >= startDate && log.date <= endDate) {
+                allLogs.push(log);
+            }
         });
     }
 
@@ -170,14 +176,17 @@ export async function getHabitStats(userId: string): Promise<FirestoreHabitStats
 
     for (let i = 0; i < habitIds.length; i += batchSize) {
         const batchIds = habitIds.slice(i, i + batchSize);
+        // Removed completed == true to prevent index issues. Filter in memory instead.
         const q = query(
             habitLogsCol,
-            where('habitId', 'in', batchIds),
-            where('completed', '==', true)
+            where('habitId', 'in', batchIds)
         );
         const snap = await getDocs(q);
         snap.docs.forEach((d) => {
-            allLogs.push({ id: d.id, ...d.data() } as FirestoreHabitLog);
+            const data = d.data();
+            if (data.completed) {
+                allLogs.push({ id: d.id, ...data } as FirestoreHabitLog);
+            }
         });
     }
 
