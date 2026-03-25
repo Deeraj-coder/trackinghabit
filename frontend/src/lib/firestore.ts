@@ -11,6 +11,7 @@ import {
     orderBy,
     writeBatch,
     Timestamp,
+    serverTimestamp,
 } from 'firebase/firestore';
 import { db } from './firebase';
 
@@ -49,22 +50,31 @@ export interface FirestoreHabitStats {
 export async function getHabits(userId: string): Promise<FirestoreHabit[]> {
     const q = query(habitsCol, where('userId', '==', userId), orderBy('createdAt', 'asc'));
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((d) => ({
-        id: d.id,
-        ...d.data(),
-    })) as FirestoreHabit[];
+    return snapshot.docs.map((d) => {
+        const data = d.data();
+        let createdAt = new Date().toISOString();
+        if (data.createdAt?.toDate) {
+            createdAt = data.createdAt.toDate().toISOString();
+        } else if (typeof data.createdAt === 'string') {
+            createdAt = data.createdAt;
+        }
+        return {
+            id: d.id,
+            ...data,
+            createdAt,
+        };
+    }) as FirestoreHabit[];
 }
 
 export async function addHabit(userId: string, name: string, frequency: string, category: string): Promise<FirestoreHabit> {
-    const now = new Date().toISOString();
     const docRef = await addDoc(habitsCol, {
         userId,
         name,
         frequency: frequency || 'daily',
         category: category || 'Other',
-        createdAt: now,
+        createdAt: serverTimestamp(),
     });
-    return { id: docRef.id, userId, name, frequency: frequency || 'daily', category: category || 'Other', createdAt: now };
+    return { id: docRef.id, userId, name, frequency: frequency || 'daily', category: category || 'Other', createdAt: new Date().toISOString() };
 }
 
 export async function updateHabit(habitId: string, name: string, frequency: string, category: string): Promise<void> {
