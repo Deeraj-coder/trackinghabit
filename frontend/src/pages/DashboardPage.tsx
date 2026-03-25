@@ -17,6 +17,7 @@ interface Habit {
     id: string;
     userId: string;
     name: string;
+    frequency: string;
     category: string;
     createdAt: string;
 }
@@ -100,15 +101,15 @@ export default function DashboardPage() {
 
     useEffect(() => { fetchData(); }, [fetchData]);
 
-    const handleAddHabit = async (data: { name: string; category: string }) => {
+    const handleAddHabit = async (data: { name: string; frequency: string; category: string }) => {
         if (!user) return;
-        try { await firestore.addHabit(user.id, data.name, data.category); fetchData(); }
+        try { await firestore.addHabit(user.id, data.name, data.frequency, data.category); fetchData(); }
         catch (err) { console.error('Failed to add habit', err); }
     };
 
-    const handleEditHabit = async (data: { name: string; category: string }) => {
+    const handleEditHabit = async (data: { name: string; frequency: string; category: string }) => {
         if (!editingHabit) return;
-        try { await firestore.updateHabit(editingHabit.id, data.name, data.category); setEditingHabit(null); fetchData(); }
+        try { await firestore.updateHabit(editingHabit.id, data.name, data.frequency, data.category); setEditingHabit(null); fetchData(); }
         catch (err) { console.error('Failed to edit habit', err); }
     };
 
@@ -322,7 +323,7 @@ export default function DashboardPage() {
                 </aside>
 
                 {/* ═══════════════ CENTER CONTENT ═══════════════ */}
-                <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-10 lg:pb-20 overflow-auto relative z-[1]">
+                <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-10 lg:pb-20 overflow-x-hidden relative z-[1] max-w-[100vw] lg:max-w-none">
                     {/* Page Header */}
                     <motion.div
                         initial={{ opacity: 0, y: -10 }}

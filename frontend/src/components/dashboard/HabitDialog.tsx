@@ -14,22 +14,25 @@ import { Label } from '@/components/ui/label';
 interface HabitDialogProps {
     open: boolean;
     onClose: () => void;
-    onSave: (data: { name: string; category: string }) => void;
-    habit?: { id: string; name: string; category: string } | null;
+    onSave: (data: { name: string; frequency: string; category: string }) => void;
+    habit?: { id: string; name: string; frequency: string; category: string } | null;
 }
 
 const CATEGORIES = ['Health', 'Fitness', 'Learning', 'Mindfulness', 'Productivity', 'Self-care', 'Other'];
 
 export default function HabitDialog({ open, onClose, onSave, habit }: HabitDialogProps) {
     const [name, setName] = useState('');
+    const [frequency, setFrequency] = useState('daily');
     const [category, setCategory] = useState('Health');
 
     useEffect(() => {
         if (habit) {
             setName(habit.name);
+            setFrequency(habit.frequency || 'daily');
             setCategory(habit.category);
         } else {
             setName('');
+            setFrequency('daily');
             setCategory('Health');
         }
     }, [habit, open]);
@@ -37,7 +40,7 @@ export default function HabitDialog({ open, onClose, onSave, habit }: HabitDialo
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (name.trim()) {
-            onSave({ name: name.trim(), category });
+            onSave({ name: name.trim(), frequency, category });
             onClose();
         }
     };
@@ -61,6 +64,24 @@ export default function HabitDialog({ open, onClose, onSave, habit }: HabitDialo
                             placeholder="e.g., Drink water, Workout"
                             required
                         />
+                    </div>
+                    <div className="space-y-2">
+                        <Label>Frequency</Label>
+                        <div className="flex gap-2">
+                            {['daily', 'weekly'].map((freq) => (
+                                <button
+                                    key={freq}
+                                    type="button"
+                                    onClick={() => setFrequency(freq)}
+                                    className={`px-4 py-2 rounded-lg text-sm font-medium capitalize transition-all cursor-pointer flex-1 ${frequency === freq
+                                            ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
+                                            : 'bg-secondary text-muted-foreground hover:bg-secondary/80'
+                                        }`}
+                                >
+                                    {freq}
+                                </button>
+                            ))}
+                        </div>
                     </div>
                     <div className="space-y-2">
                         <Label>Category</Label>

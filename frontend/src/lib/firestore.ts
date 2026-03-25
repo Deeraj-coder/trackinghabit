@@ -23,6 +23,7 @@ export interface FirestoreHabit {
     id: string;
     userId: string;
     name: string;
+    frequency: string;
     category: string;
     createdAt: string;
 }
@@ -54,20 +55,21 @@ export async function getHabits(userId: string): Promise<FirestoreHabit[]> {
     })) as FirestoreHabit[];
 }
 
-export async function addHabit(userId: string, name: string, category: string): Promise<FirestoreHabit> {
+export async function addHabit(userId: string, name: string, frequency: string, category: string): Promise<FirestoreHabit> {
     const now = new Date().toISOString();
     const docRef = await addDoc(habitsCol, {
         userId,
         name,
+        frequency: frequency || 'daily',
         category: category || 'Other',
         createdAt: now,
     });
-    return { id: docRef.id, userId, name, category: category || 'Other', createdAt: now };
+    return { id: docRef.id, userId, name, frequency: frequency || 'daily', category: category || 'Other', createdAt: now };
 }
 
-export async function updateHabit(habitId: string, name: string, category: string): Promise<void> {
+export async function updateHabit(habitId: string, name: string, frequency: string, category: string): Promise<void> {
     const docRef = doc(db, 'habits', habitId);
-    await updateDoc(docRef, { name, category });
+    await updateDoc(docRef, { name, frequency, category });
 }
 
 export async function deleteHabit(habitId: string): Promise<void> {
@@ -244,19 +246,19 @@ export async function seedSampleData(userId: string): Promise<{ habits: number; 
     }
 
     const sampleHabits = [
-        { name: 'Stretch', category: 'Fitness' },
-        { name: 'Workout', category: 'Fitness' },
-        { name: 'Drink water', category: 'Health' },
-        { name: 'Study', category: 'Learning' },
-        { name: 'Read', category: 'Learning' },
-        { name: 'Meditate', category: 'Mindfulness' },
-        { name: 'Sleep early', category: 'Health' },
-        { name: 'Clean room', category: 'Productivity' },
+        { name: 'Stretch', frequency: 'daily', category: 'Fitness' },
+        { name: 'Workout', frequency: 'daily', category: 'Fitness' },
+        { name: 'Drink water', frequency: 'daily', category: 'Health' },
+        { name: 'Study', frequency: 'daily', category: 'Learning' },
+        { name: 'Read', frequency: 'daily', category: 'Learning' },
+        { name: 'Meditate', frequency: 'daily', category: 'Mindfulness' },
+        { name: 'Sleep early', frequency: 'daily', category: 'Health' },
+        { name: 'Clean room', frequency: 'weekly', category: 'Productivity' },
     ];
 
     const createdHabits: FirestoreHabit[] = [];
     for (const h of sampleHabits) {
-        const habit = await addHabit(userId, h.name, h.category);
+        const habit = await addHabit(userId, h.name, h.frequency, h.category);
         createdHabits.push(habit);
     }
 
