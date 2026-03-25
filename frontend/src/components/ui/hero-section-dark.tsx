@@ -50,7 +50,7 @@ export function HeroSectionDark({
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[150px] pointer-events-none" />
             </div>
 
-            <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
+            <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center">
                 {/* Badge */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -67,7 +67,7 @@ export function HeroSectionDark({
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.1 }}
-                    className="text-5xl md:text-7xl font-bold tracking-tight mb-6"
+                    className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight mb-6"
                 >
                     <span className="text-foreground">{subtitle.regular} </span>
                     <span className="bg-gradient-to-r from-neon-blue via-neon-purple to-neon-green bg-clip-text text-transparent">
@@ -80,7 +80,7 @@ export function HeroSectionDark({
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
-                    className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10"
+                    className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 sm:mb-10 px-2 sm:px-0"
                 >
                     {description}
                 </motion.p>
@@ -110,11 +110,11 @@ export function HeroSectionDark({
                     className="mt-20 relative"
                 >
                     <div className="glass-card rounded-[2rem] p-2 border border-border/50 shadow-2xl overflow-hidden">
-                        <div className="bg-[#090e17]/80 backdrop-blur-xl rounded-[1.5rem] p-6 md:p-10 border border-white/5 relative">
+                        <div className="bg-[#090e17]/80 backdrop-blur-xl rounded-[1.5rem] p-4 sm:p-6 md:p-10 border border-white/5 relative">
                             {/* Inner ambient glow */}
                             <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
                             
-                            <div className="grid grid-cols-3 gap-6 mb-8 relative z-10">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 mb-6 sm:mb-8 relative z-10">
                                 {[
                                     { label: 'Daily Streak', value: '24', color: 'text-neon-green' },
                                     { label: 'Completion', value: '87%', color: 'text-neon-blue' },
@@ -125,15 +125,15 @@ export function HeroSectionDark({
                                         initial={{ opacity: 0, scale: 0.9 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         transition={{ duration: 0.8, delay: 0.8 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                                        className="stat-card p-6 text-center shadow-lg"
+                                        className="stat-card p-4 sm:p-6 text-center shadow-lg"
                                     >
-                                        <div className={`text-3xl md:text-4xl font-extrabold ${stat.color}`}>{stat.value}</div>
+                                        <div className={`text-2xl sm:text-3xl md:text-4xl font-extrabold ${stat.color}`}>{stat.value}</div>
                                         <div className="text-sm font-medium text-muted-foreground mt-2 uppercase tracking-wider">{stat.label}</div>
                                     </motion.div>
                                 ))}
                             </div>
                             {/* Mini chart bars */}
-                            <div className="flex items-end gap-1 h-24 justify-center">
+                            <div className="flex items-end gap-0.5 sm:gap-1 h-16 sm:h-24 justify-center">
                                 {Array.from({ length: 30 }).map((_, i) => {
                                     const height = 20 + Math.random() * 80;
                                     return (

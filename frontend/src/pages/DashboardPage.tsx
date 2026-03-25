@@ -322,7 +322,7 @@ export default function DashboardPage() {
                 </aside>
 
                 {/* ═══════════════ CENTER CONTENT ═══════════════ */}
-                <main className="flex-1 min-w-0 p-6 lg:p-10 lg:pb-20 overflow-auto relative z-[1]">
+                <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-10 lg:pb-20 overflow-auto relative z-[1]">
                     {/* Page Header */}
                     <motion.div
                         initial={{ opacity: 0, y: -10 }}
@@ -344,7 +344,7 @@ export default function DashboardPage() {
                         transition={{ duration: 0.6, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
                         className="mb-10"
                     >
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                             {[
                                 { value: momentum * 100, max: 100, color: '#3b82f6', label: 'Momentum', sub: '7-day avg' },
                                 { value: todayCompleted, max: Math.max(totalHabits, 1), color: '#10b981', label: 'Daily', sub: `${todayCompleted}/${totalHabits}` },
@@ -356,7 +356,7 @@ export default function DashboardPage() {
                                     initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ duration: 0.6, delay: 0.1 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-                                    className="glass-card rounded-[1.5rem] p-6 flex justify-center items-center"
+                                    className="glass-card rounded-2xl sm:rounded-[1.5rem] p-4 sm:p-6 flex justify-center items-center"
                                 >
                                     <ProgressRing
                                         value={ring.value}
@@ -471,7 +471,7 @@ export default function DashboardPage() {
                                                         <div className="text-[11px] text-muted-foreground">{habit.category}</div>
                                                     </div>
                                                 </div>
-                                                <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <div className="flex gap-0.5 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
                                                     <button
                                                         onClick={() => { setEditingHabit(habit); setDialogOpen(true); }}
                                                         className="p-2 hover:bg-white/5 rounded-lg cursor-pointer transition-colors"
